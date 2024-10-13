@@ -26,6 +26,8 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
+  final box = GetStorage();
+
   Future<void> loginUser(String email, String password) async {
     setState(() {
       _isLoading = true;
@@ -36,6 +38,7 @@ class _LoginPageState extends State<LoginPage> {
           .signInWithEmailAndPassword(email: email, password: password);
 
       if (user.user!.emailVerified) {
+        box.write('email', email);
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => EmailVerificationPage()),
@@ -55,8 +58,6 @@ class _LoginPageState extends State<LoginPage> {
       });
     }
   }
-
-  final box = GetStorage();
 
   @override
   Widget build(BuildContext context) {

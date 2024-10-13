@@ -1,20 +1,50 @@
 import 'dart:typed_data';
 import 'package:flutter/foundation.dart'; // for kIsWeb
 import 'package:flutter/material.dart';
+import 'package:flutter_mobile_whiskerway/cons.dart';
 import 'package:flutter_mobile_whiskerway/viewpets.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart'; // for picking images
 import 'package:flutter_mobile_whiskerway/home.dart';
 import 'package:flutter_mobile_whiskerway/login.dart';
 import 'package:flutter_mobile_whiskerway/profilePage.dart';
+import 'package:mongo_dart/mongo_dart.dart' as mdb;
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({Key? key}) : super(key: key);
+  const ChatScreen({super.key});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  bool hasLoaded = false;
+
+  List chats = [];
+  final box = GetStorage();
+  Future<void> getChats() async {
+    var db = await mdb.Db.create(MONGO_URL);
+    await db.open();
+
+    var collection = db.collection('chats');
+
+    // Example query to find pets with a specific condition
+    var query = mdb.where
+        .eq('email', box.read('email')); // Replace with your query condition
+
+    // Fetch documents that match the query
+    var pets = await collection.find(query).toList();
+
+    setState(() {
+      chats = pets;
+      hasLoaded = true;
+    });
+
+    // Print or process the results
+
+    await db.close();
+  }
+
   // List to store messages (both text and image)
   final List<Map<String, dynamic>> messages = [];
 
@@ -43,19 +73,19 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffd9f1fd),
+      backgroundColor: const Color(0xffd9f1fd),
       appBar: AppBar(
         toolbarHeight: 80,
         automaticallyImplyLeading: false,
-        backgroundColor: Color(0xffd9f1fd),
+        backgroundColor: const Color(0xffd9f1fd),
         elevation: 0,
         title: Padding(
-          padding: EdgeInsets.only(top: 10, bottom: 10, left: 4),
+          padding: const EdgeInsets.only(top: 10, bottom: 10, left: 4),
           child: Row(
             children: [
               IconButton(
                 iconSize: 30,
-                padding: EdgeInsets.only(right: 8),
+                padding: const EdgeInsets.only(right: 8),
                 onPressed: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => HomePage()));
@@ -65,7 +95,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   color: Colors.black,
                 ),
               ),
-              Column(
+              const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
@@ -78,11 +108,11 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                 ],
               ),
-              Spacer(),
+              const Spacer(),
               PopupMenuButton(
                 itemBuilder: (context) => [
                   PopupMenuItem(
-                    child: Text('Profile'),
+                    child: const Text('Profile'),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -92,16 +122,16 @@ class _ChatScreenState extends State<ChatScreen> {
                     },
                   ),
                   PopupMenuItem(
-                    child: Text('View Pets'),
+                    child: const Text('View Pets'),
                     onTap: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ViewPetPage()));
+                              builder: (context) => const ViewPetPage()));
                     },
                   ),
                   PopupMenuItem(
-                    child: Text(
+                    child: const Text(
                       'Log Out',
                       style: TextStyle(
                         color: Colors.red,
@@ -110,7 +140,8 @@ class _ChatScreenState extends State<ChatScreen> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => LoginPage()),
+                        MaterialPageRoute(
+                            builder: (context) => const LoginPage()),
                       );
                     },
                   ),
@@ -121,7 +152,11 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
       ),
       // Pass messages to ChatMessages widget
-      body: ChatMessages(messages: messages),
+      body: hasLoaded
+          ? ChatMessages(messages: messages)
+          : const Center(
+              child: CircularProgressIndicator(),
+            ),
       bottomNavigationBar: ChatInputBar(
         onSendMessage: _handleSendMessage,
         onSendImage: _handleSendImage,
@@ -136,10 +171,10 @@ class ChatInputBar extends StatefulWidget {
   final Function(Uint8List) onSendImage; // Callback for sending images
 
   const ChatInputBar({
-    Key? key,
+    super.key,
     required this.onSendMessage,
     required this.onSendImage,
-  }) : super(key: key);
+  });
 
   @override
   State<ChatInputBar> createState() => _ChatInputBarState();
@@ -180,7 +215,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
       child: Row(
         children: [
           IconButton(
-            icon: Icon(Icons.image),
+            icon: const Icon(Icons.image),
             onPressed: _pickImage, // Trigger image picker
           ),
           Expanded(
@@ -205,7 +240,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
 class ChatMessages extends StatelessWidget {
   final List<Map<String, dynamic>> messages;
 
-  const ChatMessages({Key? key, required this.messages}) : super(key: key);
+  const ChatMessages({super.key, required this.messages});
 
   @override
   Widget build(BuildContext context) {
@@ -238,10 +273,10 @@ class ChatBubble extends StatelessWidget {
   final String timestamp;
 
   const ChatBubble({
-    Key? key,
+    super.key,
     required this.text,
     required this.timestamp,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -292,10 +327,10 @@ class ChatImageBubble extends StatelessWidget {
   final String timestamp;
 
   const ChatImageBubble({
-    Key? key,
+    super.key,
     required this.imageBytes,
     required this.timestamp,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

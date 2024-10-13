@@ -365,6 +365,8 @@ class _SignupPageState extends State<SignupPage> {
     });
   }
 
+  final box = GetStorage();
+
   registerUser(context) async {
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -376,6 +378,9 @@ class _SignupPageState extends State<SignupPage> {
 
       // signup(nameController.text, numberController.text, addressController.text,
       //     emailController.text);
+
+      box.write('email', email.text);
+      box.write('password', password.text);
 
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const LoginPage()),
