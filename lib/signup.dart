@@ -316,6 +316,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_mobile_whiskerway/cons.dart';
 import 'package:flutter_mobile_whiskerway/login.dart';
 import 'package:flutter_mobile_whiskerway/mongodb.dart';
+import 'package:flutter_mobile_whiskerway/widgets/toast_widget.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mdb;
 
@@ -364,29 +365,37 @@ class _SignupPageState extends State<SignupPage> {
     });
   }
 
-  final box = GetStorage();
-  Future<void> registerUser() async {
+  registerUser(context) async {
     try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: email.text, password: password.text);
+
+      await FirebaseAuth.instance.currentUser!.sendEmailVerification();
+
       register();
 
-      box.write('email', email.text);
-      box.write('password', password.text);
+      // signup(nameController.text, numberController.text, addressController.text,
+      //     emailController.text);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Registered Succesfully!'),
-        ),
-      );
-
-      Navigator.push(
-        context,
+      Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const LoginPage()),
       );
-    } catch (e) {
-      // Handle registration failure
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to register: ${e.toString()}')),
-      );
+      showToast(
+          "Registered Successfully! Verification has been sent to your email");
+
+      Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        showToast('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        showToast('The account already exists for that email.');
+      } else if (e.code == 'invalid-email') {
+        showToast('The email address is not valid.');
+      } else {
+        showToast(e.toString());
+      }
+    } on Exception catch (e) {
+      showToast("An error occurred: $e");
     }
   }
 
@@ -575,7 +584,7 @@ class _SignupPageState extends State<SignupPage> {
                             height: 75,
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                registerUser();
+                                registerUser(context);
                               }
                             },
                             color: const Color(0xff013958),

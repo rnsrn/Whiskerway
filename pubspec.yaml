@@ -48,6 +48,7 @@ dependencies:
   qr_flutter: ^4.1.0
   mongo_dart:
   get_storage:
+  fluttertoast:
   
 
 dev_dependencies:

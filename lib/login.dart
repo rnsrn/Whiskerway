@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_mobile_whiskerway/widgets/toast_widget.dart';
 import 'package:get_storage/get_storage.dart';
 import 'signup.dart';
 import 'verify.dart';
@@ -31,16 +32,18 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     try {
-      if (box.read('email') == email && box.read('password') == password) {
+      final user = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+
+      if (user.user!.emailVerified) {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => EmailVerificationPage()),
         );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Login failed!')),
-        );
+        showToast('Please verify your email!');
       }
+
       // Check if the email is verified
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
