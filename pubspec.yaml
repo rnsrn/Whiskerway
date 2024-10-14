@@ -49,6 +49,9 @@ dependencies:
   mongo_dart:
   get_storage:
   fluttertoast:
+  intl:
+  flutter_map:
+  geolocator:
   
 
 dev_dependencies:
