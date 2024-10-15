@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobile_whiskerway/map_screen.dart';
 import 'package:flutter_mobile_whiskerway/widgets/button_widget.dart';
 import 'package:flutter_mobile_whiskerway/widgets/text_widget.dart';
 
 class ClinicDetailsPage extends StatefulWidget {
-  const ClinicDetailsPage({super.key});
+  Map data;
+
+  ClinicDetailsPage({super.key, required this.data});
 
   @override
   State<ClinicDetailsPage> createState() => _ClinicDetailsPageState();
@@ -56,22 +59,22 @@ class _ClinicDetailsPageState extends State<ClinicDetailsPage> {
                   height: 10,
                 ),
                 TextWidget(
-                  text: 'Veterinary Clinic Name',
+                  text: widget.data['vetClinic'],
                   fontSize: 18,
                   color: Colors.black,
                 ),
                 TextWidget(
-                  text: 'Veterinary Clinic Address',
+                  text: widget.data['location'],
                   fontSize: 14,
                   color: Colors.grey,
                 ),
                 TextWidget(
-                  text: '0923 425 6793',
+                  text: widget.data['phone'],
                   fontSize: 12,
                   color: Colors.grey,
                 ),
                 TextWidget(
-                  text: 'vetclinic@gmail.com',
+                  text: widget.data['email'],
                   fontSize: 12,
                   color: Colors.grey,
                 ),
@@ -101,6 +104,7 @@ class _ClinicDetailsPageState extends State<ClinicDetailsPage> {
                   height: 300,
                   width: double.infinity,
                   child: ListView.builder(
+                    itemCount: 0,
                     itemBuilder: (context, index) {
                       return Card(
                         color: Colors.white,
@@ -166,7 +170,14 @@ class _ClinicDetailsPageState extends State<ClinicDetailsPage> {
                 Center(
                   child: ButtonWidget(
                     label: 'Locate',
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MapScreen(
+                                    data: widget.data,
+                                  )));
+                    },
                   ),
                 ),
                 const SizedBox(

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobile_whiskerway/map_screen.dart';
 import 'package:flutter_mobile_whiskerway/widgets/button_widget.dart';
 import 'package:flutter_mobile_whiskerway/widgets/text_widget.dart';
 
 class ShelterDetailsPage extends StatefulWidget {
-  const ShelterDetailsPage({super.key});
+  Map data;
+
+  ShelterDetailsPage({super.key, required this.data});
 
   @override
   State<ShelterDetailsPage> createState() => _ShelterDetailsPageState();
@@ -56,23 +59,22 @@ class _ShelterDetailsPageState extends State<ShelterDetailsPage> {
                   height: 10,
                 ),
                 TextWidget(
-                  text: 'Animal Rescue PH Shelter',
+                  text: widget.data['shelter'],
                   fontSize: 18,
                   color: Colors.black,
                 ),
                 TextWidget(
-                  text:
-                      'J Antonino St Corner Alfonso St Zone 2 Barangay Partida San Miguel Bulacan, Bulacan, Philippines',
+                  text: widget.data['location'],
                   fontSize: 14,
                   color: Colors.grey,
                 ),
                 TextWidget(
-                  text: '0923 425 6793',
+                  text: widget.data['phone'],
                   fontSize: 12,
                   color: Colors.grey,
                 ),
                 TextWidget(
-                  text: 'vetclinic@gmail.com',
+                  text: widget.data['email'],
                   fontSize: 12,
                   color: Colors.grey,
                 ),
@@ -91,6 +93,7 @@ class _ShelterDetailsPageState extends State<ShelterDetailsPage> {
                   height: 300,
                   width: double.infinity,
                   child: ListView.builder(
+                    itemCount: 0,
                     itemBuilder: (context, index) {
                       return Card(
                         color: Colors.white,
@@ -156,7 +159,14 @@ class _ShelterDetailsPageState extends State<ShelterDetailsPage> {
                 Center(
                   child: ButtonWidget(
                     label: 'Locate',
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MapScreen(
+                                    data: widget.data,
+                                  )));
+                    },
                   ),
                 ),
                 const SizedBox(

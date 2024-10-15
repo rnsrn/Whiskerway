@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobile_whiskerway/cons.dart';
 import 'package:flutter_mobile_whiskerway/home.dart';
 import 'package:flutter_mobile_whiskerway/home_screen.dart';
 import 'package:flutter_mobile_whiskerway/login.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_mobile_whiskerway/profilePage.dart';
 import 'package:flutter_mobile_whiskerway/viewpets.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:mongo_dart/mongo_dart.dart' as mdb;
 
 class NearMePage extends StatefulWidget {
   const NearMePage({super.key});
@@ -30,6 +32,34 @@ class _NearMePageState extends State<NearMePage>
     _tabController.addListener(() {
       setState(() {}); // Rebuild the widget when the tab changes
     });
+    getDatas();
+  }
+
+  bool hasLoaded = false;
+
+  List clinics = [];
+  List shelters = [];
+
+  Future<void> getDatas() async {
+    var db = await mdb.Db.create(MONGO_URL);
+    await db.open();
+
+    var collection = db.collection('clinicdocuments');
+    var collection1 = db.collection('shelter');
+
+    // Fetch documents that match the query
+    var datas = await collection.find().toList();
+    var datas1 = await collection1.find().toList();
+
+    setState(() {
+      shelters = datas1;
+      clinics = datas;
+      hasLoaded = true;
+    });
+
+    // Print or process the results
+
+    await db.close();
   }
 
   @override
@@ -103,7 +133,7 @@ class _NearMePageState extends State<NearMePage>
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ViewPetPage()));
+                              builder: (context) => const ViewPetPage()));
                     },
                   ),
                   PopupMenuItem(
@@ -127,50 +157,38 @@ class _NearMePageState extends State<NearMePage>
           ),
         ),
       ),
-      body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-        color: const Color(0xFFd9f1fd), // Match the background color
-        child: Column(
-          children: <Widget>[
-            Container(
-              alignment: Alignment.centerLeft,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  _buildTab('Veterinary Clinic', fontSize: 16, index: 0),
-                  const SizedBox(width: 10),
-                  _buildTab('Shelter', fontSize: 16, index: 1),
+      body: hasLoaded
+          ? Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+              color: const Color(0xFFd9f1fd), // Match the background color
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        _buildTab('Veterinary Clinic', fontSize: 16, index: 0),
+                        const SizedBox(width: 10),
+                        _buildTab('Shelter', fontSize: 16, index: 1),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: [
+                        _buildContent(false, clinics),
+                        _buildContent(true, shelters),
+                      ],
+                    ),
+                  ),
                 ],
               ),
+            )
+          : const Center(
+              child: CircularProgressIndicator(),
             ),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const ClinicDetailsPage()));
-                      },
-                      child: _buildContent('Veterinary Clinic', 5)),
-                  GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const ShelterDetailsPage()));
-                      },
-                      child: _buildContent('Shelter', 5)),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -204,19 +222,37 @@ class _NearMePageState extends State<NearMePage>
     );
   }
 
-  Widget _buildContent(String title, int itemCount) {
+  Widget _buildContent(bool isShelter, List data) {
     return ListView.builder(
-      itemCount: itemCount,
+      itemCount: data.length,
       itemBuilder: (context, index) {
         return Padding(
           padding: const EdgeInsets.all(8.0),
-          child: _buildCard(title, index),
+          child: GestureDetector(
+              onTap: () {
+                if (isShelter) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ShelterDetailsPage(
+                                data: data[index],
+                              )));
+                } else {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ClinicDetailsPage(
+                                data: data[index],
+                              )));
+                }
+              },
+              child: _buildCard(data[index], isShelter)),
         );
       },
     );
   }
 
-  Widget _buildCard(String title, int index) {
+  Widget _buildCard(Map data, bool isShelter) {
     return SizedBox(
       height: 400,
       child: Card(
@@ -232,16 +268,12 @@ class _NearMePageState extends State<NearMePage>
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: const Stack(
+                child: Stack(
                   children: [
-                    Center(
-                      child: Icon(
-                        Icons.image, // Use image holder icon
-                        size: 100,
-                        color: Colors.grey,
-                      ),
+                    Image.asset(
+                      'images/image 10.png',
                     ),
-                    Positioned(
+                    const Positioned(
                       top: 8,
                       right: 8,
                       child: Icon(
@@ -261,7 +293,7 @@ class _NearMePageState extends State<NearMePage>
                   children: [
                     Expanded(
                       child: Text(
-                        'Card Header $index',
+                        isShelter ? data['shelter'] : data['vetClinic'],
                         style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
@@ -271,21 +303,21 @@ class _NearMePageState extends State<NearMePage>
                 ),
               ),
               const SizedBox(height: 4),
-              const Text(
-                'Description',
-                style: TextStyle(fontSize: 12, color: Colors.grey),
+              Text(
+                data['website'],
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
               const SizedBox(height: 4),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Icon(Icons.star, size: 20),
-                  Icon(Icons.star, size: 20),
-                  Icon(Icons.star, size: 20),
-                  Icon(Icons.star, size: 20),
-                  Icon(Icons.star, size: 20),
-                ],
-              ),
+              // const Row(
+              //   mainAxisAlignment: MainAxisAlignment.start,
+              //   children: [
+              //     Icon(Icons.star, size: 20),
+              //     Icon(Icons.star, size: 20),
+              //     Icon(Icons.star, size: 20),
+              //     Icon(Icons.star, size: 20),
+              //     Icon(Icons.star, size: 20),
+              //   ],
+              // ),
             ],
           ),
         ),
