@@ -409,239 +409,243 @@ class _SignupPageState extends State<SignupPage> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: const Color(0xff006296),
-      body: Stack(
-        children: [
-          // Background Image
-          Container(
-            decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                  Color(0xff393939),
-                  Color(0xffbbbbbc),
-                  Color(0xff626363),
-                ])),
-          ),
-          // Background Image
-          Positioned.fill(
-            child: Image.asset(
-              'images/PawCaresBg.png',
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.center,
-              color: Colors.grey.withOpacity(0.3),
-              colorBlendMode: BlendMode.modulate,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            // Background Image
+            Container(
+              decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                    Color(0xff393939),
+                    Color(0xffbbbbbc),
+                    Color(0xff626363),
+                  ])),
             ),
-          ),
-          // Page Content
-          SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
-              height: MediaQuery.of(context).size.height - 5,
-              width: double.infinity,
-              child: Form(
-                key: _formKey,
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            'Sign Up',
-                            style: TextStyle(
-                                fontSize: 40,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            'Welcome back!',
-                            style: TextStyle(fontSize: 25, color: Colors.grey),
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      Container(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 2, right: 2, bottom: 5),
-                              child: Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
-                                    color: Colors.grey.withOpacity(0.8)),
-                                child: Column(
-                                  children: <Widget>[
-                                    inputFile(
-                                      label: "First Name",
-                                      controller: fname,
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Please enter your first name';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                    inputFile(
-                                      label: "Last Name",
-                                      controller: lname,
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Please enter your last name';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                    inputFile(
-                                      label: "Contact Number",
-                                      controller: phone,
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Please enter your contact number';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                    inputFile(
-                                      label: "Email",
-                                      controller: email,
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Please enter your email';
-                                        }
-                                        // Add your email validation logic here
-                                        return null;
-                                      },
-                                    ),
-                                    inputFile(
-                                      label: "Password",
-                                      obscureText: _obscurePassword,
-                                      suffixIcon: _obscurePassword
-                                          ? Icons.visibility_off
-                                          : Icons.visibility,
-                                      controller: password,
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Please enter your password';
-                                        }
-                                        // Add your password validation logic here
-                                        return null;
-                                      },
-                                      toggleVisibility: () {
-                                        setState(() {
-                                          _obscurePassword = !_obscurePassword;
-                                        });
-                                      },
-                                    ),
-                                    inputFile(
-                                      label: "Confirm Password",
-                                      obscureText: _obscureConfirmPassword,
-                                      suffixIcon: _obscureConfirmPassword
-                                          ? Icons.visibility_off
-                                          : Icons.visibility,
-                                      controller: cpassword,
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Please confirm your password';
-                                        }
-                                        if (value != password.text) {
-                                          return 'Passwords do not match';
-                                        }
-                                        return null;
-                                      },
-                                      toggleVisibility: () {
-                                        setState(() {
-                                          _obscureConfirmPassword =
-                                              !_obscureConfirmPassword;
-                                        });
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
+            // Background Image
+            Positioned.fill(
+              child: Image.asset(
+                'images/PawCaresBg.png',
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.center,
+                color: Colors.grey.withOpacity(0.3),
+                colorBlendMode: BlendMode.modulate,
+              ),
+            ),
+            // Page Content
+            SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                height: MediaQuery.of(context).size.height - 5,
+                width: double.infinity,
+                child: Form(
+                  key: _formKey,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'Sign Up',
+                              style: TextStyle(
+                                  fontSize: 40,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              'Welcome back!',
+                              style:
+                                  TextStyle(fontSize: 25, color: Colors.grey),
                             )
                           ],
                         ),
-                      ),
-                      const SizedBox(height: 110),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          top: 30,
+                        const SizedBox(
+                          height: 30,
                         ),
-                        child: Container(
-                          padding: const EdgeInsets.only(top: 3, left: 3),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
+                        Container(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 2, right: 2, bottom: 5),
+                                child: Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: Colors.grey.withOpacity(0.8)),
+                                  child: Column(
+                                    children: <Widget>[
+                                      inputFile(
+                                        label: "First Name",
+                                        controller: fname,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter your first name';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                      inputFile(
+                                        label: "Last Name",
+                                        controller: lname,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter your last name';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                      inputFile(
+                                        label: "Contact Number",
+                                        controller: phone,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter your contact number';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                      inputFile(
+                                        label: "Email",
+                                        controller: email,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter your email';
+                                          }
+                                          // Add your email validation logic here
+                                          return null;
+                                        },
+                                      ),
+                                      inputFile(
+                                        label: "Password",
+                                        obscureText: _obscurePassword,
+                                        suffixIcon: _obscurePassword
+                                            ? Icons.visibility_off
+                                            : Icons.visibility,
+                                        controller: password,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter your password';
+                                          }
+                                          // Add your password validation logic here
+                                          return null;
+                                        },
+                                        toggleVisibility: () {
+                                          setState(() {
+                                            _obscurePassword =
+                                                !_obscurePassword;
+                                          });
+                                        },
+                                      ),
+                                      inputFile(
+                                        label: "Confirm Password",
+                                        obscureText: _obscureConfirmPassword,
+                                        suffixIcon: _obscureConfirmPassword
+                                            ? Icons.visibility_off
+                                            : Icons.visibility,
+                                        controller: cpassword,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please confirm your password';
+                                          }
+                                          if (value != password.text) {
+                                            return 'Passwords do not match';
+                                          }
+                                          return null;
+                                        },
+                                        toggleVisibility: () {
+                                          setState(() {
+                                            _obscureConfirmPassword =
+                                                !_obscureConfirmPassword;
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
                           ),
-                          child: MaterialButton(
-                            minWidth: double.infinity,
-                            height: 75,
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                registerUser(context);
-                              }
-                            },
-                            color: const Color(0xff013958),
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
+                        ),
+                        const SizedBox(height: 110),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            top: 30,
+                          ),
+                          child: Container(
+                            padding: const EdgeInsets.only(top: 3, left: 3),
+                            decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(50),
                             ),
-                            child: const Text(
-                              "Sign up",
-                              style: TextStyle(
-                                fontWeight: FontWeight.normal,
-                                fontSize: 18,
-                                color: Colors.white,
+                            child: MaterialButton(
+                              minWidth: double.infinity,
+                              height: 75,
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  registerUser(context);
+                                }
+                              },
+                              color: const Color(0xff013958),
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              child: const Text(
+                                "Sign up",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          const Text(
-                            "I have an account. ",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const LoginPage()),
-                              );
-                            },
-                            child: const Text(
-                              "Login",
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 18,
-                                color: Colors.white,
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            const Text(
+                              "I have an account. ",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const LoginPage()),
+                                );
+                              },
+                              child: const Text(
+                                "Login",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      )
-                    ],
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

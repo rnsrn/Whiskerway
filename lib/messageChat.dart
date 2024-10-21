@@ -156,17 +156,17 @@ class _ChatScreenState extends State<ChatScreen> {
 
   // Function to handle image submission (as bytes)
   void _handleSendImage(Uint8List imageBytes) async {
-    var db = await mdb.Db.create(MONGO_URL);
-    await db.open();
+    // var db = await mdb.Db.create(MONGO_URL);
+    // await db.open();
 
-    var collection = db.collection('chats');
-    await collection.insertOne({
-      'email': box.read('email'),
-      'data': '',
-      'timestamp': DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now()),
-      'updatedAt': DateTime.now(),
-      'type': 'image',
-    });
+    // var collection = db.collection('chats');
+    // await collection.insertOne({
+    //   'email': box.read('email'),
+    //   'data': '',
+    //   'timestamp': DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now()),
+    //   'updatedAt': DateTime.now(),
+    //   'type': 'image',
+    // });
     setState(() {
       messages.add({
         'type': 'image',

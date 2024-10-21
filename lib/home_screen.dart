@@ -1,29 +1,117 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:five_pointed_star/five_pointed_star.dart';
+import 'package:flutter_mobile_whiskerway/cons.dart';
 import 'package:flutter_mobile_whiskerway/login.dart';
 import 'package:flutter_mobile_whiskerway/mapPin.dart';
 import 'package:flutter_mobile_whiskerway/mating.dart';
 import 'package:flutter_mobile_whiskerway/plusCircle.dart';
 import 'package:flutter_mobile_whiskerway/profilePage.dart';
 import 'package:flutter_mobile_whiskerway/viewpets.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:mongo_dart/mongo_dart.dart' as mdb;
 
 class HomeScreenPage extends StatefulWidget {
+  const HomeScreenPage({super.key});
+
   @override
   State<HomeScreenPage> createState() => _HomeScreenPageState();
 }
 
 class _HomeScreenPageState extends State<HomeScreenPage> {
+  @override
+  void initState() {
+    super.initState();
+    getPets();
+    getDatas();
+    getMyData();
+  }
+
   int mycount = 0;
+
+  bool hasLoaded = false;
+
+  String myname = '';
+
+  final box = GetStorage();
+  Future<void> getMyData() async {
+    var db = await mdb.Db.create(MONGO_URL);
+    await db.open();
+
+    var collection = db.collection('users');
+
+    // Example query to find pets with a specific condition
+    var query = mdb.where
+        .eq('email', box.read('email')); // Replace with your query condition
+
+    // Fetch documents that match the query
+    var pets = await collection.find(query).toList();
+
+    setState(() {
+      myname = pets.first['firstname'];
+      hasLoaded = true;
+    });
+
+    // Print or process the results
+
+    await db.close();
+  }
+
+  List petsList = [];
+  Future<void> getPets() async {
+    var db = await mdb.Db.create(MONGO_URL);
+    await db.open();
+
+    var collection = db.collection('users');
+
+    // Example query to find pets with a specific condition
+    var query = mdb.where
+        .eq('email', box.read('email')); // Replace with your query condition
+
+    // Fetch documents that match the query
+    var pets = await collection.find(query).toList();
+
+    setState(() {
+      petsList = pets;
+    });
+
+    // Print or process the results
+
+    await db.close();
+  }
+
+  List clinics = [];
+  List shelters = [];
+
+  Future<void> getDatas() async {
+    var db = await mdb.Db.create(MONGO_URL);
+    await db.open();
+
+    var collection = db.collection('clinicdocuments');
+    var collection1 = db.collection('shelter');
+
+    // Fetch documents that match the query
+    var datas = await collection.find().toList();
+    var datas1 = await collection1.find().toList();
+
+    setState(() {
+      shelters = datas1;
+      clinics = datas;
+    });
+
+    // Print or process the results
+
+    await db.close();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffd9f1fd),
+      backgroundColor: const Color(0xffd9f1fd),
       appBar: AppBar(
         toolbarHeight: 80,
         automaticallyImplyLeading: false, // This removes the back arrow
-        backgroundColor: Color(0xffd9f1fd),
+        backgroundColor: const Color(0xffd9f1fd),
         elevation: 0,
         title: Padding(
           padding: const EdgeInsets.only(
@@ -43,9 +131,9 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
                       fontSize: 22,
                     ),
                   ),
-                  const Text(
-                    'User Name',
-                    style: TextStyle(
+                  Text(
+                    myname,
+                    style: const TextStyle(
                       color: Colors.grey,
                       fontWeight: FontWeight.w400,
                       fontSize: 16,
@@ -57,7 +145,7 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
               PopupMenuButton(
                   itemBuilder: (context) => [
                         PopupMenuItem(
-                          child: Text('Profile'),
+                          child: const Text('Profile'),
                           onTap: () {
                             Navigator.push(
                                 context,
@@ -66,16 +154,16 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
                           },
                         ),
                         PopupMenuItem(
-                          child: Text('View Pets'),
+                          child: const Text('View Pets'),
                           onTap: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => ViewPetPage()));
+                                    builder: (context) => const ViewPetPage()));
                           },
                         ),
                         PopupMenuItem(
-                          child: Text('Log Out',
+                          child: const Text('Log Out',
                               style: TextStyle(
                                 color: Colors.red,
                               )),
@@ -83,7 +171,7 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => LoginPage()));
+                                    builder: (context) => const LoginPage()));
                           },
                         )
                       ])
@@ -91,188 +179,202 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        padding: EdgeInsets.only(
-          top: 10,
-          left: 10,
-          right: 10,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: List.generate(
-                  7,
-                  (index) => _buildUserAvatar('Full Name'),
-                ),
+      body: hasLoaded
+          ? SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              padding: const EdgeInsets.only(
+                top: 10,
+                left: 10,
+                right: 10,
               ),
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            SizedBox(
-              height: 400,
-              child: CarouselSlider(
-                options: CarouselOptions(
-                  autoPlay: true,
-                  autoPlayInterval: Duration(seconds: 3),
-                  enlargeCenterPage: true,
-                  //aspectRatio: 16 / 9,
-                  height: 800, // Adjust the aspect ratio here
-                ),
-                items: List.generate(
-                  5,
-                  (index) => _buildSection1Card(index),
-                ),
-              ),
-            ),
-            SizedBox(height: 23),
-            Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "ADOPT A PET",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  MaterialButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => HomePageAdopt()));
-                    },
-                    color: Color(0xff013958),
-                    textColor: Colors.white,
-                    child: Text("View All"),
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: List.generate(
+                        7,
+                        (index) => _buildUserAvatar('Full Name'),
+                      ),
                     ),
                   ),
-                ]),
-            SizedBox(height: 10),
-            SizedBox(
-              height: 300,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 3,
-                itemBuilder: (context, index) {
-                  return _buildSection3Card(index);
-                },
-              ),
-            ),
-            Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "FIND A MATE",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  const SizedBox(
+                    height: 15,
                   ),
-                  MaterialButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => HomePageMating()));
-                    },
-                    color: Color(0xff013958),
-                    textColor: Colors.white,
-                    child: Text("View All"),
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                  SizedBox(
+                    height: 400,
+                    child: CarouselSlider(
+                      options: CarouselOptions(
+                        autoPlay: true,
+                        autoPlayInterval: const Duration(seconds: 3),
+                        enlargeCenterPage: true,
+                        //aspectRatio: 16 / 9,
+                        height: 800, // Adjust the aspect ratio here
+                      ),
+                      items: List.generate(
+                        5,
+                        (index) => _buildSection1Card(index),
+                      ),
                     ),
                   ),
-                ]),
-            SizedBox(height: 10),
-            SizedBox(
-              height: 300,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 3,
-                itemBuilder: (context, index) {
-                  return _buildSection3rdCard(index);
-                },
-              ),
-            ),
-            Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "NEARBY VETERINARY CLINIC",
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                  ),
-                  MaterialButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => HomePageNearMe()));
-                    },
-                    color: Color(0xff013958),
-                    textColor: Colors.white,
-                    child: Text("View All"),
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                  const SizedBox(height: 23),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "ADOPT A PET",
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
+                        MaterialButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HomePageAdopt()));
+                          },
+                          color: const Color(0xff013958),
+                          textColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 5),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Text("View All"),
+                        ),
+                      ]),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    height: 300,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: petsList.length,
+                      itemBuilder: (context, index) {
+                        return _buildSection3Card(index, petsList[index]);
+                      },
                     ),
                   ),
-                ]),
-            SizedBox(height: 10),
-            SizedBox(
-              height: 300,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 5,
-                itemBuilder: (context, index) {
-                  return _buildSection4Card(index);
-                },
-              ),
-            ),
-            Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "NEARBY SHELTERS",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  MaterialButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => HomePageNearMe()));
-                    },
-                    color: Color(0xff013958),
-                    textColor: Colors.white,
-                    child: Text("View All"),
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "FIND A MATE",
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
+                        MaterialButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HomePageMating()));
+                          },
+                          color: const Color(0xff013958),
+                          textColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 5),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Text("View All"),
+                        ),
+                      ]),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    height: 300,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: petsList.length,
+                      itemBuilder: (context, index) {
+                        return _buildSection3rdCard(index, petsList[index]);
+                      },
                     ),
                   ),
-                ]),
-            SizedBox(height: 10),
-            SizedBox(
-              height: 300,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 5,
-                itemBuilder: (context, index) {
-                  return _buildSection2Card(index);
-                },
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "NEARBY VETERINARY CLINIC",
+                          style: TextStyle(
+                              fontSize: 22, fontWeight: FontWeight.bold),
+                        ),
+                        MaterialButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const HomePageNearMe()));
+                          },
+                          color: const Color(0xff013958),
+                          textColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 5),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Text("View All"),
+                        ),
+                      ]),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    height: 300,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: clinics.length,
+                      itemBuilder: (context, index) {
+                        return _buildSection4Card(index, clinics[index], false);
+                      },
+                    ),
+                  ),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "NEARBY SHELTERS",
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
+                        MaterialButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const HomePageNearMe()));
+                          },
+                          color: const Color(0xff013958),
+                          textColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 5),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Text("View All"),
+                        ),
+                      ]),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    height: 350,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: shelters.length,
+                      itemBuilder: (context, index) {
+                        return _buildSection2Card(index, shelters[index]);
+                      },
+                    ),
+                  ),
+                ],
               ),
+            )
+          : const Center(
+              child: CircularProgressIndicator(),
             ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -281,7 +383,7 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
       padding: const EdgeInsets.only(right: 10, left: 10),
       child: Column(
         children: [
-          CircleAvatar(
+          const CircleAvatar(
             backgroundColor: Colors.white,
             radius: 40,
             child: Icon(
@@ -289,15 +391,15 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
               size: 40,
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Text(
             fullname,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           )
         ],
@@ -328,21 +430,13 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
   }
 
 ///////////////////Section Header 3///////////////////
-  Widget _buildSection3Card(int index) {
-    List<String> listimages = [
-      'images/dog1.jpg',
-      'images/dog2.jpg',
-      'images/dog3.jpg',
-      'images/dog4.jpg',
-      'images/dog5.jpg'
-    ];
-
+  Widget _buildSection3Card(int index, Map data) {
     return Column(
       children: [
         Container(
           height: 100,
           width: 400,
-          color: Color(0xffd9f1fd),
+          color: const Color(0xffd9f1fd),
           padding: const EdgeInsets.all(3.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -360,11 +454,11 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: EdgeInsets.only(left: 3),
+                        padding: const EdgeInsets.only(left: 3),
                         child: Text(
-                          'Row Header',
+                          data['name'] ?? '',
                           textAlign: TextAlign.start,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.black,
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -372,11 +466,11 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(left: 3),
+                        padding: const EdgeInsets.only(left: 3),
                         child: Text(
-                          'Body copy description',
+                          data['breed'] ?? '',
                           textAlign: TextAlign.start,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.black,
                             fontSize: 18,
                             fontWeight: FontWeight.normal,
@@ -387,127 +481,7 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
                   ),
                   IconButton(
                     iconSize: 30,
-                    padding: EdgeInsets.only(left: 30),
-                    icon:
-                        const Icon(Icons.arrow_right_alt, color: Colors.black),
-                    onPressed: () {
-                      // Handle search action
-                    },
-                  ),
-                ],
-              )
-            ],
-          ),
-        ),
-        Container(
-          height: 100,
-          width: 400,
-          color: Color(0xffd9f1fd),
-          padding: const EdgeInsets.all(3.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Image.asset(
-                    'images/dog2.jpg',
-                    height: 80,
-                    width: 100,
-                    fit: BoxFit.scaleDown,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(left: 5),
-                        child: Text(
-                          'Row Header',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 5),
-                        child: Text(
-                          'Body copy description',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  IconButton(
-                    iconSize: 30,
-                    padding: EdgeInsets.only(left: 30),
-                    icon:
-                        const Icon(Icons.arrow_right_alt, color: Colors.black),
-                    onPressed: () {
-                      // Handle search action
-                    },
-                  ),
-                ],
-              )
-            ],
-          ),
-        ),
-        Container(
-          height: 100,
-          width: 400,
-          color: Color(0xffd9f1fd),
-          padding: const EdgeInsets.all(3.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Image.asset(
-                    'images/dog3.jpg',
-                    height: 80,
-                    width: 100,
-                    fit: BoxFit.scaleDown,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(left: 5),
-                        child: Text(
-                          'Row Header',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 5),
-                        child: Text(
-                          'Body copy description',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  IconButton(
-                    iconSize: 30,
-                    padding: EdgeInsets.only(left: 30),
+                    padding: const EdgeInsets.only(left: 30),
                     icon:
                         const Icon(Icons.arrow_right_alt, color: Colors.black),
                     onPressed: () {
@@ -524,21 +498,13 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
   }
 
 ///////////////////Section Header 3rd///////////////////
-  Widget _buildSection3rdCard(int index) {
-    List<String> listimages3rd = [
-      'images/dog1.jpg',
-      'images/dog2.jpg',
-      'images/dog3.jpg',
-      'images/dog4.jpg',
-      'images/dog5.jpg'
-    ];
-
+  Widget _buildSection3rdCard(int index, Map data) {
     return Column(
       children: [
         Container(
           height: 100,
           width: 400,
-          color: Color(0xffd9f1fd),
+          color: const Color(0xffd9f1fd),
           padding: const EdgeInsets.all(3.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -558,7 +524,7 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
                       Padding(
                         padding: EdgeInsets.only(left: 3),
                         child: Text(
-                          'Row Header',
+                          data['name'] ?? '',
                           textAlign: TextAlign.start,
                           style: TextStyle(
                             color: Colors.black,
@@ -570,7 +536,7 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
                       Padding(
                         padding: EdgeInsets.only(left: 3),
                         child: Text(
-                          'Body copy description',
+                          data['breed'] ?? '',
                           textAlign: TextAlign.start,
                           style: TextStyle(
                             color: Colors.black,
@@ -583,127 +549,7 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
                   ),
                   IconButton(
                     iconSize: 30,
-                    padding: EdgeInsets.only(left: 30),
-                    icon:
-                        const Icon(Icons.arrow_right_alt, color: Colors.black),
-                    onPressed: () {
-                      // Handle search action
-                    },
-                  ),
-                ],
-              )
-            ],
-          ),
-        ),
-        Container(
-          height: 100,
-          width: 400,
-          color: Color(0xffd9f1fd),
-          padding: const EdgeInsets.all(3.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Image.asset(
-                    'images/dog2.jpg',
-                    height: 80,
-                    width: 100,
-                    fit: BoxFit.scaleDown,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(left: 5),
-                        child: Text(
-                          'Row Header',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 5),
-                        child: Text(
-                          'Body copy description',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  IconButton(
-                    iconSize: 30,
-                    padding: EdgeInsets.only(left: 30),
-                    icon:
-                        const Icon(Icons.arrow_right_alt, color: Colors.black),
-                    onPressed: () {
-                      // Handle search action
-                    },
-                  ),
-                ],
-              )
-            ],
-          ),
-        ),
-        Container(
-          height: 100,
-          width: 400,
-          color: Color(0xffd9f1fd),
-          padding: const EdgeInsets.all(3.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Image.asset(
-                    'images/dog3.jpg',
-                    height: 80,
-                    width: 100,
-                    fit: BoxFit.scaleDown,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(left: 5),
-                        child: Text(
-                          'Row Header',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 5),
-                        child: Text(
-                          'Body copy description',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  IconButton(
-                    iconSize: 30,
-                    padding: EdgeInsets.only(left: 30),
+                    padding: const EdgeInsets.only(left: 30),
                     icon:
                         const Icon(Icons.arrow_right_alt, color: Colors.black),
                     onPressed: () {
@@ -720,7 +566,7 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
   }
 
 ///////////////////Section Header 4///////////////////
-  Widget _buildSection4Card(int index) {
+  Widget _buildSection4Card(int index, Map data, bool isShelter) {
     List<String> listimages4 = [
       'images/dog4.jpg',
       'images/dog5.jpg',
@@ -736,7 +582,7 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
         child: Stack(
           children: [
             Image.asset(
-              listimages4[index],
+              'images/image 10.png',
               width: 375,
               height: 300,
               fit: BoxFit.cover,
@@ -769,8 +615,8 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
                     bottom: 20,
                     left: 20,
                     child: Text(
-                      'Card Header $index',
-                      style: TextStyle(
+                      isShelter ? data['shelter'] : data['vetClinic'],
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -784,8 +630,8 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
                     bottom: 20,
                     left: 20,
                     child: Text(
-                      'This is a card description $index',
-                      style: TextStyle(
+                      data['website'],
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.normal,
@@ -812,7 +658,7 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
   }
 
   ///////////////////Section Header 2///////////////////
-  Widget _buildSection2Card(int index) {
+  Widget _buildSection2Card(int index, Map data) {
     List<String> listimages = [
       'images/dog1.jpg',
       'images/dog2.jpg',
@@ -822,7 +668,7 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
     ];
 
     return Container(
-      padding: EdgeInsets.only(top: 10, left: 10),
+      padding: const EdgeInsets.only(top: 10, left: 10),
       width: 200,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -831,22 +677,21 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
           ClipRRect(
             borderRadius: BorderRadius.circular(25),
             child: Image.asset(
-              listimages[
-                  index], // Display only the image corresponding to the current index
+              'images/image 10.png',
               width: 200,
               height: 200,
               fit: BoxFit.cover,
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Padding(
             padding: const EdgeInsets.only(left: 5),
             child: Text(
-              'Header $index',
+              data['shelter'],
               textAlign: TextAlign.start,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.black,
-                fontSize: 20,
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -854,11 +699,11 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
           Padding(
             padding: const EdgeInsets.only(left: 5),
             child: Text(
-              'Lorem ipsum dolor $index',
+              data['website'],
               textAlign: TextAlign.start,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.black,
-                fontSize: 18,
+                fontSize: 14,
               ),
             ),
           ),
