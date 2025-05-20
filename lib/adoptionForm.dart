@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 //import 'package:flutter_mobile_whiskerway/dbHelper/mongodb.dart'; // Uncomment when MongoDB setup is complete
 
 class AdoptionForm extends StatefulWidget {
-  const AdoptionForm({Key? key}) : super(key: key);
+  const AdoptionForm({super.key});
 
   @override
   _AdoptionFormState createState() => _AdoptionFormState();
@@ -263,9 +263,9 @@ class _AdoptionFormState extends State<AdoptionForm> {
                 const Text("Rent"),
               ]),
               // if (!_ownHome) // Only show if renting
-              Row(
+              const Row(
                 children: [
-                  const Text("Do you have permission to have a pet?"),
+                  Text("Do you have permission to have a pet?"),
                 ],
               ),
               // if (!_ownHome)
@@ -294,9 +294,9 @@ class _AdoptionFormState extends State<AdoptionForm> {
                 ],
               ),
 
-              Row(
+              const Row(
                 children: [
-                  const Text("Do you have a fenced yard or space for a pet?"),
+                  Text("Do you have a fenced yard or space for a pet?"),
                 ],
               ),
               Row(
@@ -323,9 +323,9 @@ class _AdoptionFormState extends State<AdoptionForm> {
                   const Text("No"),
                 ],
               ),
-              Row(
+              const Row(
                 children: [
-                  const Text("Who do you live with?"),
+                  Text("Who do you live with?"),
                 ],
               ),
               Row(
@@ -394,9 +394,9 @@ class _AdoptionFormState extends State<AdoptionForm> {
               ),
               const Divider(),
               // Pet Size Radio
-              Row(
+              const Row(
                 children: [
-                  const Text("What size pet do you prefer?"),
+                  Text("What size pet do you prefer?"),
                 ],
               ),
               Row(
@@ -435,9 +435,9 @@ class _AdoptionFormState extends State<AdoptionForm> {
               ),
 
               // Energy Level Radio
-              Row(
+              const Row(
                 children: [
-                  const Text("Preferred pet's energy level?"),
+                  Text("Preferred pet's energy level?"),
                 ],
               ),
               Row(
@@ -534,10 +534,10 @@ class _AdoptionFormState extends State<AdoptionForm> {
               ),
               const SizedBox(height: 20),
               Padding(
-                padding: EdgeInsets.only(top: 30),
+                padding: const EdgeInsets.only(top: 30),
                 child: Container(
                   width: 200, // Adjust the width here
-                  padding: EdgeInsets.only(top: 3, right: 3),
+                  padding: const EdgeInsets.only(top: 3, right: 3),
                   decoration:
                       BoxDecoration(borderRadius: BorderRadius.circular(50)),
                   child: MaterialButton(
@@ -549,7 +549,7 @@ class _AdoptionFormState extends State<AdoptionForm> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(50),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Submit request',
                       style: TextStyle(color: Colors.white, fontSize: 18),
                     ),

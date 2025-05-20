@@ -150,7 +150,7 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => HomePageProfile()));
+                                    builder: (context) => const HomePageProfile()));
                           },
                         ),
                         PopupMenuItem(
@@ -233,7 +233,7 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => HomePageAdopt()));
+                                    builder: (context) => const HomePageAdopt()));
                           },
                           color: const Color(0xff013958),
                           textColor: Colors.white,
@@ -270,7 +270,7 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => HomePageMating()));
+                                    builder: (context) => const HomePageMating()));
                           },
                           color: const Color(0xff013958),
                           textColor: Colors.white,
@@ -522,11 +522,11 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: EdgeInsets.only(left: 3),
+                        padding: const EdgeInsets.only(left: 3),
                         child: Text(
                           data['name'] ?? '',
                           textAlign: TextAlign.start,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.black,
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -534,11 +534,11 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(left: 3),
+                        padding: const EdgeInsets.only(left: 3),
                         child: Text(
                           data['breed'] ?? '',
                           textAlign: TextAlign.start,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.black,
                             fontSize: 18,
                             fontWeight: FontWeight.normal,

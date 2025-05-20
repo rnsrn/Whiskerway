@@ -197,7 +197,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 padding: const EdgeInsets.only(right: 8),
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomePage()));
+                      MaterialPageRoute(builder: (context) => const HomePage()));
                 },
                 icon: const Icon(
                   Icons.arrow_back,
@@ -226,7 +226,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => HomePageProfile()),
+                            builder: (context) => const HomePageProfile()),
                       );
                     },
                   ),

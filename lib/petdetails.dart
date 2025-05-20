@@ -377,7 +377,7 @@ class _PetPageProfileState extends State<PetPageProfile> {
   int _selectedIndex = 0;
   static final List<Widget> _widgetOptions = <Widget>[
     const Petdetails(), // Example of actual widget
-    MatingPage(), // Example of actual widget
+    const MatingPage(), // Example of actual widget
     const PetListScreen(), // Example of actual widget
     const ChatScreen(),
     const NearMePage(), // Example of actual widget

@@ -86,7 +86,7 @@ class _NearMePageState extends State<NearMePage>
                 padding: const EdgeInsets.only(right: 8),
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomePage()));
+                      MaterialPageRoute(builder: (context) => const HomePage()));
                 },
                 icon: const Icon(
                   Icons.arrow_back,
@@ -123,7 +123,7 @@ class _NearMePageState extends State<NearMePage>
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => HomePageProfile()),
+                            builder: (context) => const HomePageProfile()),
                       );
                     },
                   ),
@@ -336,8 +336,8 @@ class HomePageNearMe extends StatefulWidget {
 class _HomePageNearMeState extends State<HomePageNearMe> {
   int _selectedIndex = 4;
   static final List<Widget> _widgetOptions = <Widget>[
-    HomeScreenPage(), // Example of actual widget
-    MatingPage(), // Example of actual widget
+    const HomeScreenPage(), // Example of actual widget
+    const MatingPage(), // Example of actual widget
     const PetListScreen(), // Example of actual widget
     const ChatScreen(),
     const NearMePage(), // Example of actual widget

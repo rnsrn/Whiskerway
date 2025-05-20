@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobile_whiskerway/cons.dart';
-import 'package:flutter_mobile_whiskerway/editprofile.dart';
 import 'package:flutter_mobile_whiskerway/home.dart';
 import 'package:flutter_mobile_whiskerway/login.dart';
 import 'package:flutter_mobile_whiskerway/mapPin.dart';
@@ -78,7 +77,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 padding: const EdgeInsets.only(right: 8),
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomePage()));
+                      MaterialPageRoute(builder: (context) => const HomePage()));
                 },
                 icon: const Icon(
                   Icons.arrow_back,

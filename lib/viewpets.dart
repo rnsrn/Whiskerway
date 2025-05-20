@@ -91,7 +91,7 @@ class _ViewpetsState extends State<Viewpets> {
                 padding: const EdgeInsets.only(right: 8),
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomePage()));
+                      MaterialPageRoute(builder: (context) => const HomePage()));
                 },
                 icon: const Icon(
                   Icons.arrow_back,
@@ -321,7 +321,7 @@ class _ViewPetPageState extends State<ViewPetPage> {
   int _selectedIndex = 0;
   static final List<Widget> _widgetOptions = <Widget>[
     const Viewpets(), // Example of actual widget
-    MatingPage(), // Example of actual widget
+    const MatingPage(), // Example of actual widget
     const PetListScreen(), // Example of actual widget
     const ChatScreen(),
     const NearMePage(), // Example of actual widget

@@ -4,7 +4,6 @@ import 'package:flutter_mobile_whiskerway/home.dart';
 import 'package:flutter_mobile_whiskerway/widgets/toast_widget.dart';
 import 'package:get_storage/get_storage.dart';
 import 'signup.dart';
-import 'verify.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -42,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
         box.write('email', email);
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HomePage()),
+          MaterialPageRoute(builder: (context) => const HomePage()),
         );
       } else {
         showToast('Please verify your email!');

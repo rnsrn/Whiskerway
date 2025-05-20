@@ -12,7 +12,7 @@ import 'package:line_icons/line_icons.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 class PetListScreen extends StatefulWidget {
-  const PetListScreen({Key? key}) : super(key: key);
+  const PetListScreen({super.key});
 
   @override
   _PetListScreenState createState() => _PetListScreenState();
@@ -24,29 +24,29 @@ class _PetListScreenState extends State<PetListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffd9f1fd),
+      backgroundColor: const Color(0xffd9f1fd),
       appBar: AppBar(
         toolbarHeight: 80,
         automaticallyImplyLeading: false,
-        backgroundColor: Color(0xffd9f1fd),
+        backgroundColor: const Color(0xffd9f1fd),
         elevation: 0,
         title: Padding(
-          padding: EdgeInsets.only(top: 10, bottom: 10, left: 4),
+          padding: const EdgeInsets.only(top: 10, bottom: 10, left: 4),
           child: Row(
             children: [
               IconButton(
                 iconSize: 30,
-                padding: EdgeInsets.only(right: 8),
+                padding: const EdgeInsets.only(right: 8),
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomePage()));
+                      MaterialPageRoute(builder: (context) => const HomePage()));
                 },
                 icon: const Icon(
                   Icons.arrow_back,
                   color: Colors.black,
                 ),
               ),
-              Column(
+              const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
@@ -59,30 +59,30 @@ class _PetListScreenState extends State<PetListScreen> {
                   ),
                 ],
               ),
-              Spacer(),
+              const Spacer(),
               PopupMenuButton(
                 itemBuilder: (context) => [
-                  PopupMenuItem(
-                    child: Text('Profile'),
+                  const PopupMenuItem(
                     value: 'Profile',
+                    child: Text('Profile'),
                   ),
                   PopupMenuItem(
-                    child: Text('View Pets'),
+                    child: const Text('View Pets'),
                     onTap: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ViewPetPage()));
+                              builder: (context) => const ViewPetPage()));
                     },
                   ),
-                  PopupMenuItem(
+                  const PopupMenuItem(
+                    value: 'Log Out',
                     child: Text(
                       'Log Out',
                       style: TextStyle(
                         color: Colors.red,
                       ),
                     ),
-                    value: 'Log Out',
                   ),
                 ],
                 onSelected: (value) {
@@ -90,12 +90,12 @@ class _PetListScreenState extends State<PetListScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => HomePageProfile()),
+                          builder: (context) => const HomePageProfile()),
                     );
                   } else if (value == 'Log Out') {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => LoginPage()),
+                      MaterialPageRoute(builder: (context) => const LoginPage()),
                     );
                   }
                 },
@@ -106,7 +106,7 @@ class _PetListScreenState extends State<PetListScreen> {
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
-        padding: EdgeInsets.only(
+        padding: const EdgeInsets.only(
           top: 10,
           left: 15,
           right: 10,
@@ -117,13 +117,13 @@ class _PetListScreenState extends State<PetListScreen> {
             Row(
               children: [
                 _buildMaterialButton('All'),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 _buildMaterialButton('Dog'),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 _buildMaterialButton('Cat'),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             _buildTabContent(),
           ],
         ),
@@ -141,10 +141,10 @@ class _PetListScreenState extends State<PetListScreen> {
       child: Container(
         decoration: BoxDecoration(
           color:
-              _selectedButton == label ? Color(0xff013958) : Color(0xff7ecef8),
+              _selectedButton == label ? const Color(0xff013958) : const Color(0xff7ecef8),
           borderRadius: BorderRadius.circular(20),
         ),
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
         child: Text(
           label,
           style: TextStyle(
@@ -160,18 +160,20 @@ class _PetListScreenState extends State<PetListScreen> {
   Widget _buildTabContent() {
     switch (_selectedButton) {
       case 'All':
-        return AllTab();
+        return const AllTab();
       case 'Dog':
-        return DogTab();
+        return const DogTab();
       case 'Cat':
-        return CatTab();
+        return const CatTab();
       default:
-        return AllTab();
+        return const AllTab();
     }
   }
 }
 
 class AllTab extends StatelessWidget {
+  const AllTab({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -179,7 +181,7 @@ class AllTab extends StatelessWidget {
         Container(
           height: 100,
           width: 400,
-          color: Color(0xffd9f1fd),
+          color: const Color(0xffd9f1fd),
           padding: const EdgeInsets.all(3.0),
           child: InkWell(
             onTap: () {
@@ -202,7 +204,7 @@ class AllTab extends StatelessWidget {
                       width: 100,
                       fit: BoxFit.scaleDown,
                     ),
-                    Column(
+                    const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
@@ -243,6 +245,8 @@ class AllTab extends StatelessWidget {
 }
 
 class DogTab extends StatelessWidget {
+  const DogTab({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -250,7 +254,7 @@ class DogTab extends StatelessWidget {
         Container(
           height: 100,
           width: 400,
-          color: Color(0xffd9f1fd),
+          color: const Color(0xffd9f1fd),
           padding: const EdgeInsets.all(3.0),
           child: InkWell(
             onTap: () {
@@ -273,7 +277,7 @@ class DogTab extends StatelessWidget {
                       width: 100,
                       fit: BoxFit.scaleDown,
                     ),
-                    Column(
+                    const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
@@ -314,6 +318,8 @@ class DogTab extends StatelessWidget {
 }
 
 class CatTab extends StatelessWidget {
+  const CatTab({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -321,7 +327,7 @@ class CatTab extends StatelessWidget {
         Container(
           height: 100,
           width: 400,
-          color: Color(0xffd9f1fd),
+          color: const Color(0xffd9f1fd),
           padding: const EdgeInsets.all(3.0),
           child: InkWell(
             onTap: () {
@@ -344,7 +350,7 @@ class CatTab extends StatelessWidget {
                       width: 100,
                       fit: BoxFit.scaleDown,
                     ),
-                    Column(
+                    const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
@@ -410,7 +416,7 @@ class Pet_StatisticPage extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => HomePageAdopt()));
+                                builder: (context) => const HomePageAdopt()));
                       },
                       icon: const Icon(
                         Icons.arrow_back,
@@ -520,17 +526,17 @@ class Pet_StatisticPage extends StatelessWidget {
                           ),
                           Center(
                             child: Padding(
-                              padding: EdgeInsets.all(18.0),
+                              padding: const EdgeInsets.all(18.0),
                               child: ElevatedButton(
                                 onPressed: () {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              AdoptionForm()));
+                                              const AdoptionForm()));
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Color(0xff013958),
+                                  backgroundColor: const Color(0xff013958),
                                   padding: const EdgeInsets.symmetric(
                                     vertical: 15,
                                     horizontal: 50,
@@ -564,41 +570,43 @@ class Pet_StatisticPage extends StatelessWidget {
 }
 
 class HomePageAdopt extends StatefulWidget {
+  const HomePageAdopt({super.key});
+
   @override
   State<HomePageAdopt> createState() => _HomePageAdoptState();
 }
 
 class _HomePageAdoptState extends State<HomePageAdopt> {
   int _selectedIndex = 2;
-  static List<Widget> _widgetOptions = <Widget>[
-    HomeScreenPage(), // Example of actual widget
-    MatingPage(), // Example of actual widget
-    PetListScreen(), // Example of actual widget
-    ChatScreen(),
-    NearMePage(), // Example of actual widget
+  static final List<Widget> _widgetOptions = <Widget>[
+    const HomeScreenPage(), // Example of actual widget
+    const MatingPage(), // Example of actual widget
+    const PetListScreen(), // Example of actual widget
+    const ChatScreen(),
+    const NearMePage(), // Example of actual widget
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffd9f1fd),
+      backgroundColor: const Color(0xffd9f1fd),
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: Container(
         child: SafeArea(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
             child: GNav(
-              backgroundColor: Color(0xffd9f1fd),
+              backgroundColor: const Color(0xffd9f1fd),
               rippleColor: Colors.black,
-              hoverColor: Color(0xff013958),
+              hoverColor: const Color(0xff013958),
               gap: 8,
               activeColor: Colors.white,
               iconSize: 24,
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              duration: Duration(milliseconds: 400),
-              tabBackgroundColor: Color(0xff013958),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              duration: const Duration(milliseconds: 400),
+              tabBackgroundColor: const Color(0xff013958),
               color: Colors.black,
-              tabs: [
+              tabs: const [
                 GButton(icon: LineIcons.home),
                 GButton(icon: LineIcons.heart),
                 GButton(icon: LineIcons.plusCircle),
